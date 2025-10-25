@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h2 class="card-title mb-4">Scan Attendance QR Code</h2>
+                
+                <div id="qr-reader" style="width:100%;"></div>
+                
+                <div id="qr-reader-results" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    function docReady(fn) {
+        // see if DOM is already available
+        if (document.readyState === "complete" || document.readyState === "interactive") {
+            // call on next available tick
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+
+    docReady(function () {
+        const resultContainer = document.getElementById('qr-reader-results');
+        let lastResult, countResults = 0;
+
+        // This function is called when a QR code is successfully scanned
+        async function onScanSuccess(decodedText, decodedResult) {
+            if (decodedText !== lastResult) {
+                lastResult = decodedText;
+                resultContainer.innerHTML = `<div class="alert alert-info">Scanning...</div>`;
+                
+                // --- Send the scanned data to our Flask backend ---
+                try {
+                    const response = await fetch("{{ url_for('qr.verify_attendance') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ qr_data: decodedText }),
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        resultContainer.innerHTML = `<div class="alert alert-success">${result.message}</div>`;
+                    } else {
+                        resultContainer.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    resultContainer.innerHTML = `<div class="alert alert-danger">Could not verify attendance.</div>`;
+                }
+            }
+        }
+
+        // Initialize the QR Code scanner
+        var html5QrcodeScanner = new Html5QrcodeScanner(
+            "qr-reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm text-center">
+    <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Welcome to EventHive</h1>
+        <p class="fs-4">The central hub for all university events. Discover, register, and engage with campus life.</p>
+        <a href="{{ url_for('events.events_list') }}" class="btn btn-primary btn-lg mt-3">Browse Upcoming Events</a>
+    </div>
+</div>
+{% endblock %}
