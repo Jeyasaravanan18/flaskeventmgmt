@@ -1,10 +1,179 @@
 {% extends "base.html" %}
+
 {% block content %}
-<div class="p-5 mb-4 bg-white rounded-3 shadow-sm text-center">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">Welcome to EventHive</h1>
-        <p class="fs-4">The central hub for all university events. Discover, register, and engage with campus life.</p>
-        <a href="{{ url_for('events.events_list') }}" class="btn btn-primary btn-lg mt-3">Browse Upcoming Events</a>
+<style>
+    .hero {
+        background: linear-gradient(135deg, #6366f1 0%, #10b981 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
+        animation: slideInUp 0.8s ease;
+        margin-bottom: 3rem;
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        letter-spacing: -1px;
+    }
+
+    .hero p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .hero-btn {
+        background: white;
+        color: #6366f1;
+        border: none;
+        border-radius: 10px;
+        padding: 0.8rem 2.5rem;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-card {
+        background: white;
+        border: none;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        text-align: center;
+        height: 100%;
+        animation: fadeIn 0.6s ease-out backwards;
+    }
+
+    .feature-card:nth-child(1) { animation-delay: 0.1s; }
+    .feature-card:nth-child(2) { animation-delay: 0.2s; }
+    .feature-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(99, 102, 241, 0.2);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        background: linear-gradient(135deg, #6366f1 0%, #10b981 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h5 {
+        font-weight: 700;
+        margin: 1rem 0;
+        color: #1e293b;
+    }
+
+    .feature-card p {
+        color: #64748b;
+        margin: 0;
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cta-section {
+        text-align: center;
+        padding: 3rem 2rem;
+        background: rgba(99, 102, 241, 0.05);
+        border-radius: 15px;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        animation: fadeIn 0.8s ease 0.6s backwards;
+    }
+
+    .cta-section h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: #1e293b;
+    }
+
+    .cta-section p {
+        font-size: 1.1rem;
+        color: #64748b;
+        margin-bottom: 2rem;
+    }
+</style>
+
+<div class="hero">
+    <h1><i class="fas fa-rocket"></i> Welcome to EventSync</h1>
+    <p>Discover, organize, and engage with amazing events on campus</p>
+    <a href="{{ url_for('events.events_list') }}" class="btn hero-btn">
+        <i class="fas fa-search"></i> Browse Events
+    </a>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h5>Discover Events</h5>
+            <p>Find amazing events happening on campus and register instantly</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-qrcode"></i>
+            </div>
+            <h5>QR Check-in</h5>
+            <p>Fast and easy attendance tracking with unique QR codes</p>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <h5>Leave Feedback</h5>
+            <p>Share your experience and help organizers improve events</p>
+        </div>
     </div>
 </div>
+
+{% if not current_user.is_authenticated %}
+<div class="cta-section">
+    <h2>Ready to get started?</h2>
+    <p>Join EventSync today and be part of amazing campus events</p>
+    <a href="{{ url_for('auth.register') }}" class="btn btn-lg" style="background: linear-gradient(135deg, #6366f1 0%, #10b981 100%); color: white; border: none; border-radius: 10px; font-weight: 700;">
+        <i class="fas fa-user-plus"></i> Create Account
+    </a>
+</div>
+{% endif %}
 {% endblock %}
