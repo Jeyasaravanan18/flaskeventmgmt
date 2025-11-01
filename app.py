@@ -57,4 +57,4 @@ def create_admin():
     db.session.commit()
     print(f"Admin user {username} created successfully!")
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
